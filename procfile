@@ -1,1 +1,1 @@
-web: gunicorn moviesorter_project.wsgi --log-file -
+web: gunicorn moviesorter_project.wsgi --log-file - 
