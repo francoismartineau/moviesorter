@@ -1,0 +1,1 @@
+web: gunicorn moviesorter_project.wsgi --log-file -
