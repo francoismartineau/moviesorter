@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('MOVIESORTER_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','sampledomain.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'movie-sorter.herokuapp.com', 'movie-sorter.com']
 
 
 # Application definition
