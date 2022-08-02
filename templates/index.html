@@ -25,6 +25,7 @@
     <br>
     {% if movie_title is not None %}
         <p>Fix the order of these frames</p>
+        <p>Reload to change frames</p>
             {% for frame in frames %}
                 <span class="frame-container" draggable="true">
                 <span class="frame" id="frame-time-{{ frame.time }}" draggable="false">
