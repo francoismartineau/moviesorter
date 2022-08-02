@@ -2,19 +2,23 @@ import os
 import shutil               # delete movie folders
 import importlib.util       # import cloudinary uploader script
 import sys
-#import urllib.parse         # convert movie names to url safe
+import urllib.request, json
+import urllib.error
 
 from pathlib import Path
 from moviesorter import movies_access
+from dotenv import find_dotenv, load_dotenv
+load_dotenv(find_dotenv())
 
+uploader = None
 
-MOVIES = ['Natural Born Killers', 'Napoleon Dynamite', 'Harry Potter 1']
+MOVIES = ['Napoleon Dynamite', 'Harry Potter 1', 'Eraserhead', 'Toy Story']
 FRAMES_DIR = os.path.join(Path(__file__).resolve().parent, 'movie_frames_container')
 FRAMES_PER_MOVIE = 100
 TAG = 'movie_sorter'
 
 def import_uploader():
-    cloudinary_upload_script = r"C:\Util2\Cloudinary Uploader\main.py"
+    cloudinary_upload_script = os.environ.get('CLOUDINARY_UPLOAD_SCRIPT')
     spec = importlib.util.spec_from_file_location("module.name", cloudinary_upload_script)
     global uploader
     uploader = importlib.util.module_from_spec(spec)
@@ -22,13 +26,17 @@ def import_uploader():
     spec.loader.exec_module(uploader)
     uploader.authenticate_to_cloudinary()
 
-def generate_all():
+def generate_all(upload=True):
+    if upload:
+        import_uploader()
     movies_access.set_frames_qty(FRAMES_PER_MOVIE)
     for movie_title in MOVIES:
         movie_frames_dir = os.path.join(FRAMES_DIR, movie_title)
         generate_movie_frames(movie_title, movie_frames_dir)
-        upload_movie_frames(movie_title, movie_frames_dir)
-    generate_client_assets_list()
+        if upload:
+            upload_movie_frames(movie_title, movie_frames_dir)
+    if upload:
+        generate_client_assets_list()
 
 def generate_movie_frames(movie_title, movie_frames_dir):
     movies_access.set_frames_dir(movie_frames_dir)
@@ -50,7 +58,20 @@ def clear_local():
         path = os.path.join(FRAMES_DIR, f)
         shutil.rmtree(path)
 
+def clear_cloud():
+    if uploader == None:
+        import_uploader()
+    try:
+        with urllib.request.urlopen(os.environ.get('CLOUD_LIST_URL')) as url:
+            print('ok')
+            data = json.loads(url.read().decode())
+            for image in data['resources']:
+                public_id = image['public_id']
+                uploader.delete_file(public_id)
+    except urllib.error.HTTPError as e:
+        print("Can't clear cloud, maybe the assests list doesn't exist:", e)
+
 if __name__ == '__main__':
     clear_local()
-    import_uploader()
-    generate_all()
+    clear_cloud()
+    generate_all(upload=True)

@@ -4,15 +4,17 @@ import random
 import urllib.parse
 import urllib.request, json
 from pathlib import Path
+from dotenv import find_dotenv, load_dotenv
+load_dotenv(find_dotenv())
 
-MOVIES_DIR = r"D:\FILMS"
+MOVIES_DIR = os.environ.get('MOVIES_DIR')
 base_dir = Path(__file__).resolve().parent.parent
 FRAMES_DIR = os.path.join(base_dir, 'static', 'moviesorter','frames')
 VID_EXTS = [".avi", ".mkv", ".mp4"]
 IMG_W = 500
 FRAME_QTY = 3
 
-CLOUD_LIST_URL = "https://res.cloudinary.com/frizambisme/image/list/movie_sorter.json"
+CLOUD_LIST_URL = os.environ.get('CLOUD_LIST_URL')
 CLOUD_IMG_URL = "https://res.cloudinary.com/frizambisme/image/upload/v{version}/{public_id}.{ext}"
 
 # -------------------------------
@@ -76,12 +78,13 @@ def make_frames(movie_title):
         time = get_random_time(duration)
         frame_times.append(time)
         make_frame(time, movie_path)
+        print('made frame:', movie_title, time)
     return frame_times
 
 def get_duration(movie_path):
     args = "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1".split()
     args.append('{}'.format(movie_path))
-    duration = run_command(args)
+    duration, _ = run_command(args)
     duration = duration.split(".")[0]
     return duration
 
@@ -107,13 +110,16 @@ def make_frame(time, movie_path):
     image_path = os.path.join(FRAMES_DIR, "{:05d}.jpg".format(time))
     formated_time = format_time(time)
     resize = "-vf scale={}:-1".format(IMG_W)
-    args = "ffmpeg -ss {0} -i \"{1}\" -frames:v 1 {3} -q:v 2  \"{2}\"".format(formated_time, movie_path, image_path, resize)
+    args = "ffmpeg -ss {0} -i \"{1}\" -frames:v 1 {3} -q:v 2  \"{2}\"\n".format(formated_time, movie_path, image_path, resize)
     return run_command(args)
 
 # -------------------------------
 def run_command(args):
     output = subprocess.run(args, capture_output=True, shell=True)
-    return output.stdout.decode("utf-8")
+    out = output.stdout.decode("utf-8")
+    err = output.stderr.decode("utf-8")
+    print(out, err[:100]+'...', sep="\n")
+    return out, err
 
 def clear_frames():
     if os.path.isdir(FRAMES_DIR):
@@ -165,6 +171,3 @@ def get_cloud_frames(cloud_list, movie_title):
 if __name__ == "__main__":
     movie_title = choose_a_movie_title()
     make_frames(movie_title)
-
-# https://res.cloudinary.com/frizambisme/image/upload/v1659359359/moviesorter/Natural%2520Born%2520Killers/2543.jpg
-# https://res.cloudinary.com/frizambisme/image/upload/v1659359359/moviesorter/Natural%20Born%20Killers/2543.jpg
