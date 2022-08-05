@@ -1,3 +1,19 @@
+const sortable = new Sortable.default(document.querySelectorAll('.frame-container-container'), {
+    draggable: '.frame-container',
+    sortAnimation: {
+      duration: 200,
+      delay: 0,
+      easingFunction: 'ease-in-out',
+    },
+    plugins: [SortAnimation.default],
+    mirror: {
+        constrainDimensions: true,
+    }
+});
+
+
+
+/*
 document.addEventListener('DOMContentLoaded', (_) => {
 
     var draggedEl = null;
@@ -56,3 +72,4 @@ document.addEventListener('DOMContentLoaded', (_) => {
       item.addEventListener('drop', handleDrop);
     });
   });
+  */

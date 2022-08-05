@@ -13,8 +13,8 @@ def index(request):
     if request.method == 'GET' and 'movie_title' in request.GET:
         context['movie_title'] = request.GET['movie_title']
         context['frames'] = get_cloud_frames(cloud_list, context['movie_title'])
-    else:
-        context['nth_selected'] = random.randint(0, len(context['movie_titles'])-1)
+    #else:
+        #context['nth_selected'] = None #0 # random.randint(0, len(context['movie_titles'])-1)
     response = render(request, 'index.html', context)
     return response
 

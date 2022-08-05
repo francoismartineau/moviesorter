@@ -1,3 +1,148 @@
-.frame.over {
-    outline: 3px solid  #666;
+html, body {
+	background-color: #EAEAEA;
+
 }
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+
+a {
+	color: #343a40;
+	text-decoration: underline;
+}
+
+h1, h2, h3 {
+	font-family: 'Varela Round', sans-serif;
+}
+
+button {
+	padding: 0.5em 1em;
+	border: 1px solid #CCC;
+	font-size: 1.2em;
+	border-radius: 0.25em;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+	text-decoration: none;
+	margin-left: 15px;
+	border-radius: 0.25em;
+}
+
+.navbar-dark .navbar-nav .active>.nav-link {
+	background: rgba(255,255,255, 0.1);
+}
+
+div.box {
+	background-color: #F8F8F8;
+	border: 1px solid #CCC;
+	border-radius: 0.25em;
+}
+
+div.step-1 {
+	display: flex; 
+	flex-direction: row; 
+	justify-content: space-between;
+	align-items: center;
+}
+
+	form.movie-form {
+		display: flex;
+		flex: 1;
+		margin-left: 3em;
+	}
+
+	select.movie-form-select {
+		width: 100%;
+		padding: 0.5em 0 0.6em 0.75em;
+		font-size: 1.5em;
+		border-radius: 0.25em;
+		border: 3px solid #bfbfbf;
+		background: transparent;
+	}
+
+	input.movie-form-submit {
+		padding: 0.5em 1em;
+		border: 3px solid #bfbfbf;
+		font-size: 1.5em;
+		border-radius: 0.25em;
+		margin-left: 1em;
+	}
+
+	input.movie-form-submit:hover {
+		background: #F8F8F8;
+	}
+
+
+div.step-2 {
+
+}
+
+	div.frame-container-container {
+		margin-top: 2em;
+		display: flex;
+		flex-direction: row;
+	}
+
+	div.frame-container {
+		flex: 1;
+		padding: 5px;
+	}
+
+	div.frame img {
+		cursor: pointer;
+		border: 5px solid transparent;
+		border-radius: 0.25em;
+		width: 100%;
+	}
+
+		div.frame img:hover {
+			border-color: cornflowerblue;
+		}
+
+		div.frame img.wrong {
+			border-color: #f5c6cb;
+		}
+
+		div.frame img.right {
+			border-color: #c3e6cb;
+		}
+
+	div.frame.over {
+	    outline: 3px solid #666;
+	}
+
+	button#submit-order-button {
+		font-size: 2em;
+		margin-top: 0.5em;
+	}
+
+	label.frame-time-display {
+		width: 100%;
+		text-align: center;
+		font-size: 1.2em;
+	}
+
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  line-height: 60px; /* Vertically center the text there */
+  background-color: #f5f5f5;
+}
+
+/* -------------------------------------------- */
+/* -- draggable ------------------------------- */
+.draggable-source--is-dragging {
+	opacity: 0;
+}
+
