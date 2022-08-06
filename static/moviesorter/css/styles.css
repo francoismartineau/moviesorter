@@ -54,12 +54,13 @@ div.step-1 {
 
 	form.movie-form {
 		display: flex;
-		flex: 1;
+		/*flex: 1;*/
 		margin-left: 3em;
 	}
 
 	select.movie-form-select {
 		width: 100%;
+		min-width: 100%;
 		padding: 0.5em 0 0.6em 0.75em;
 		font-size: 1.5em;
 		border-radius: 0.25em;
@@ -68,6 +69,7 @@ div.step-1 {
 	}
 
 	input.movie-form-submit {
+		width: 100%;
 		padding: 0.5em 1em;
 		border: 3px solid #bfbfbf;
 		font-size: 1.5em;
@@ -84,44 +86,51 @@ div.step-2 {
 
 }
 
-	div.frame-container-container {
+	#frame-size-slider {
+		/*display: flex;*/
+		width: 100%;
+	}
+
+	div#frames-container {
 		margin-top: 2em;
 		display: flex;
 		flex-direction: row;
+		flex-wrap: wrap;
 	}
 
 	div.frame-container {
-		flex: 1;
-		padding: 5px;
+		/*flex: 1;*/
+		padding: 0.1em;
+		width: 20em;
 	}
 
-	div.frame img {
+	div.frame-container img {
 		cursor: pointer;
 		border: 5px solid transparent;
 		border-radius: 0.25em;
 		width: 100%;
 	}
 
-		div.frame img:hover {
+		div.frame-container img:hover {
 			border-color: cornflowerblue;
 		}
 
-		div.frame img.wrong {
+		div.frame-container img.wrong {
 			border-color: #f5c6cb;
 		}
 
-		div.frame img.right {
+		div.frame-container img.right {
 			border-color: #c3e6cb;
 		}
 
-	div.frame.over {
+	div.frame-container.over {
 	    outline: 3px solid #666;
 	}
 
-	button#submit-order-button {
+	/*button#submit-order-button {
 		font-size: 2em;
 		margin-top: 0.5em;
-	}
+	}*/
 
 	label.frame-time-display {
 		width: 100%;

@@ -1,5 +1,5 @@
-const sortable = new Sortable.default(document.querySelectorAll('.frame-container-container'), {
-    draggable: '.frame-container',
+const sortable = new Sortable.default(document.querySelectorAll('#frames-container'), {
+    draggable: '.frame-container', // except if class "right"
     sortAnimation: {
       duration: 200,
       delay: 0,
@@ -11,65 +11,32 @@ const sortable = new Sortable.default(document.querySelectorAll('.frame-containe
     }
 });
 
+sortable.on('drag:start', (event) => {
+    const currentTarget = event.originalEvent.target;
+    if (noDrag(currentTarget)) {
+        event.cancel();
+    }    
+});
 
+function noDrag(currentTarget) {
+    return currentTarget.classList.contains('right');
+}
 
 /*
-document.addEventListener('DOMContentLoaded', (_) => {
-
-    var draggedEl = null;
-    function handleDragStart(e) {
-        this.style.opacity = '0.4';
-        
-        draggedEl = this;
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', this.innerHTML);      
-    }
-  
-    function handleDragOver(e) {
-        if (e.preventDefault) {
-            e.preventDefault();             // Sans, la souris deviendrait un symbol d'interdit.
-        }
-        e.dataTransfer.dropEffect = 'move';
-        return false;
-    }
-  
-    function handleDragEnter(_) {
-        this.classList.add('over');
-    }
-  
-    function handleDragLeave(_) {
-        this.classList.remove('over');
-    }
-
-    function handleDrop(e) {
-        if (e.stopPropagation) {
-            e.stopPropagation();            // stops the browser from redirecting.
-        }
-
-        if (draggedEl != this) {
-            draggedEl.innerHTML = this.innerHTML;
-            this.innerHTML = e.dataTransfer.getData('text/html');
-        }  
-              
-        return false;
-    }
-
-    function handleDragEnd(_) {
-        this.style.opacity = '1';
+const hasClass = (element, classesToPrevent) => {
+    let res = false;
+    let currentElem = element;
     
-        items.forEach(function (item) {
-          item.classList.remove('over');
-        });
+    while (currentElem) {
+      const currElemHasClass = Array.from(currentElem.classList).some((cls) => classesToPrevent.includes(cls));
+      if (currElemHasClass) {
+        res = true;
+        currentElem = undefined;
+      } else {
+        currentElem = currentElem.parentElement;
+      }
     }
-  
-    let items = document.querySelectorAll('.frame-container');
-    items.forEach(function(item) {
-      item.addEventListener('dragstart', handleDragStart);
-      item.addEventListener('dragover', handleDragOver);
-      item.addEventListener('dragenter', handleDragEnter);
-      item.addEventListener('dragleave', handleDragLeave);
-      item.addEventListener('dragend', handleDragEnd);
-      item.addEventListener('drop', handleDrop);
-    });
-  });
+
+    return res;
+  }
   */

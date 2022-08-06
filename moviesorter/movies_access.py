@@ -142,10 +142,12 @@ def get_cloud_list():
             if movie_title not in cloud_list:
                 cloud_list[movie_title] = []
             image_url = get_image_url(version, public_id, ext)
-            cloud_list[movie_title].append(image_url)
+            cloud_list[movie_title].append({'url': image_url, 'public_id': public_id})
     return cloud_list
 
-def get_cloud_movie_titles(cloud_list):
+def get_cloud_movie_titles(cloud_list=""):
+    if cloud_list == "":
+        cloud_list = get_cloud_list()
     return list(cloud_list.keys())
 
 def get_movie_title_from_public_id(public_id):
@@ -157,13 +159,19 @@ def get_image_url(version, public_id, ext):
     public_id = urllib.parse.quote(public_id)
     return CLOUD_IMG_URL.format(version=version, public_id=public_id, ext=ext)
 
-def get_cloud_frames(cloud_list, movie_title):
+def get_cloud_frames(movie_title, frame_qty, except_public_ids=[]):
+    cloud_list = get_cloud_list()
+    available_frames = cloud_list[movie_title]
+    random.shuffle(available_frames)
     frames = []
-    random.shuffle(cloud_list[movie_title])
-    for _ in range(FRAME_QTY):
-        url = cloud_list[movie_title].pop()
-        time = url.split('/')[-1].split('.')[0]
-        frames.append({'url': url, 'time': time})
+    frame_counter = 0
+    for frame in available_frames:
+        if frame['public_id'] not in except_public_ids:
+            time = frame['public_id'].split('/')[-1]
+            frames.append({'time': time, 'cloudinaryId': frame['public_id'], 'url': frame['url']})
+            frame_counter += 1
+        if frame_counter == frame_qty:
+            break
     return frames
 
 
