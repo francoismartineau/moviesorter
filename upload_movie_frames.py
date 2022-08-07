@@ -12,7 +12,7 @@ load_dotenv(find_dotenv())
 
 uploader = None
 
-MOVIES = ['Napoleon Dynamite', 'Harry Potter 1', 'Eraserhead', 'Toy Story']
+MOVIES = ['2001 A Space Odyssey', 'Fear and Loathing in Las Vegas', 'Pulp Fiction', 'The Matrix'] #'Napoleon Dynamite', 'Harry Potter 1', 'Eraserhead', 'Toy Story']
 FRAMES_DIR = os.path.join(Path(__file__).resolve().parent, 'movie_frames_container')
 FRAMES_PER_MOVIE = 100
 TAG = 'movie_sorter'
@@ -73,5 +73,5 @@ def clear_cloud():
 
 if __name__ == '__main__':
     clear_local()
-    clear_cloud()
+    #clear_cloud()
     generate_all(upload=True)

@@ -1,26 +1,81 @@
 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 var score = 0;
 
-function affectScore(event) {
-    switch(event) {
-        case 'wrong':
-            score -= 5;
-            break;
-        case 'right':
-            const framesQty = [...document.querySelectorAll('.frame-container')].length;
-            score += framesQty * 10;
-            break;
-        }
-        document.getElementById('score').innerHTML = score;
-}
-
 
 $( document ).ready(function() {
     requestFrames();
-    affectScore();
+    initScore();
 });
 
-$('#submit-order-button').click(() => {    
+function requestFrames() {
+    const framesContainer = document.getElementById('frames-container');
+    const movieTitle = getMovieTitle(); 
+    const exceptCloudinaryIds = Array.from(framesContainer.children).map((el) => { return el.dataset.cloudinaryId });
+
+    $.ajax(
+        {
+            type:"POST",                                 
+            url: "/request-frames",     
+            headers: {'X-CSRFToken': csrftoken},
+            mode: 'same-origin',                         
+            data:{
+                'movie-title': movieTitle,
+                'except-cloudinary-ids[]': exceptCloudinaryIds                      
+            },
+            success: function( result )                   
+            {
+                insertFrames(framesContainer, result.frames);
+            }
+        })
+}
+
+function insertFrames(framesContainer, frames) {
+    for (const frame of frames) {
+        var img = document.createElement('img');
+        img.src = frame.url;
+
+        var label = document.createElement('label');
+        label.classList.add('frame-time-display');
+
+        var frameContainer = document.createElement('div');
+        frameContainer.classList.add('frame-container');
+        frameContainer.dataset.time = frame.time;
+        frameContainer.dataset.cloudinaryId = frame.cloudinaryId;
+        frameContainer.appendChild(img);
+        frameContainer.appendChild(label);
+        if (frameW)
+            frameContainer.style.width = frameW+'em';
+
+        framesContainer.append(frameContainer);
+    }
+}
+
+function initScore() {
+    score = 0;
+    document.getElementById('score').innerHTML = score;
+    const movieTitle = getMovieTitle(); 
+    console.log(movieTitle);
+    var bestScore;
+    $.ajax(
+    {
+        type:"POST",                                 
+        url: "/request-best-score",     
+        headers: {'X-CSRFToken': csrftoken},
+        mode: 'same-origin', // Do not send CSRF token to another domain.                          
+        data:{
+            'movie_title': movieTitle,
+        },
+        success: function( result )                   
+        {
+            bestScore = result.bestScore;
+            document.getElementById('best-score').innerHTML = bestScore;
+        }
+    })
+}
+
+// ----------------------------------------
+function submitOrder() {
+    const movieTitle = getMovieTitle(); 
     let frame_times = [...document.querySelectorAll('.frame-container')].map(el => el.dataset.time);
     $.ajax(
     {
@@ -29,7 +84,9 @@ $('#submit-order-button').click(() => {
         headers: {'X-CSRFToken': csrftoken},
         mode: 'same-origin', // Do not send CSRF token to another domain.                          
         data:{
-            'frame_times[]': frame_times                      
+            'movie_title': movieTitle,
+            'frame_times[]': frame_times,
+            'score': score,
         },
         success: function( result )                   
         {
@@ -39,15 +96,11 @@ $('#submit-order-button').click(() => {
             {
                 displayFrameTimes();
                 requestFrames();
-                affectScore('right');
             }
-            else
-            {
-                affectScore('wrong');
-            }
+            affectScore(result);
         }
     })
-});
+}
 
 function displayFrameTimes()
 {
@@ -92,49 +145,19 @@ function applyResultClasses(success)
 
 }
 
-function requestFrames() {
-    const framesContainer = document.getElementById('frames-container');
-    const movieTitle = framesContainer.getAttribute('data-movie-title');
-    const exceptCloudinaryIds = Array.from(framesContainer.children).map((el) => { return el.dataset.cloudinaryId });
-
-    $.ajax(
-        {
-            type:"POST",                                 
-            url: "/request-frames",     
-            headers: {'X-CSRFToken': csrftoken},
-            mode: 'same-origin',                         
-            data:{
-                'movie-title': movieTitle,
-                'except-cloudinary-ids[]': exceptCloudinaryIds                      
-            },
-            success: function( result )                   
-            {
-                insertFrames(framesContainer, result.frames);
-            }
-        })
+function affectScore(result) {
+    score = result.score;
+    document.getElementById('score').innerHTML = score;
+    const bestScore = result.bestScore;
+    document.getElementById('best-score').innerHTML = bestScore;
 }
 
-function insertFrames(framesContainer, frames) {
-    for (const frame of frames) {
-        var img = document.createElement('img');
-        img.src = frame.url;
 
-        var label = document.createElement('label');
-        label.classList.add('frame-time-display');
-
-        var frameContainer = document.createElement('div');
-        frameContainer.classList.add('frame-container');
-        frameContainer.dataset.time = frame.time;
-        frameContainer.dataset.cloudinaryId = frame.cloudinaryId;
-        frameContainer.appendChild(img);
-        frameContainer.appendChild(label);
-        if (frameW)
-            frameContainer.style.width = frameW+'em';
-
-        framesContainer.append(frameContainer);
-    }
+// ----------------------------------------
+function getMovieTitle() {
+    const movieTitle = document.getElementById('frames-container').getAttribute('data-movie-title');
+    return movieTitle;
 }
-
 // ----------------------------------------
 var frameW;
 function setFrameSize(event) {

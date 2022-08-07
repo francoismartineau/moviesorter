@@ -89,7 +89,7 @@
                             <!--button onclick="location.reload()">Reload frames</button-->
                             <p class="text-center">
                                 {% csrf_token %}
-                                <button id="submit-order-button">Done</button>
+                                <button id="submit-order-button" onclick="submitOrder()">Done</button>
                             </p>
                         </div>
 
@@ -99,6 +99,7 @@
     				<div class="container">
                         <!-- alert-success alert-danger -->
                         <label>Score: </label><span id="score"></span>
+                        <label>Best: </label><span id="best-score"></span>
 				        <div id="result" class="alert  text-center" role="alert">
 						</div>
 

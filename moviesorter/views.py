@@ -28,13 +28,32 @@ def submit_order(request):
     result = {}
     if request.method == 'POST' and 'frame_times[]' in request.POST:
         frame_times = request.POST.getlist('frame_times[]')
-        sorted = all(int(frame_times[i]) <= int(frame_times[i+1]) for i in range(len(frame_times) - 1))
-        if sorted:
-            result["success"] = True
-            result["text"] = "Good job!"
-        else:
-            result["success"] = False
-            result["text"] = "Wrong order."
+        success = all(int(frame_times[i]) <= int(frame_times[i+1]) for i in range(len(frame_times) - 1))
+        result["success"] = success
+        
+        def affect_score(request, success, frames_qty):
+            score = int(request.POST.get('score', 0))
+            if success:
+                score += frames_qty*10
+            else:
+                score -= 5
+            return score
+        result["score"] = affect_score(request, success, len(frame_times))
+        def update_best_score(request, score):
+            best_scores = request.session.get('best_scores', {})
+            movie_title = request.POST.get('movie_title')
+            best_score = best_scores.get(movie_title, 0)
+            if score > best_score:
+                best_score = score
+                best_scores[movie_title] = best_score
+                request.session['best_scores'] = best_scores
+                request.session.modified = True
+            return best_score
+        result["bestScore"] = update_best_score(request, result["score"])
+
+        result["text"] = { True: "Good job!",
+            False: "Wrong order."}[success]
+
     return JsonResponse(result)
 
 def request_frames(request):
@@ -42,12 +61,13 @@ def request_frames(request):
     if request.method == 'POST':
         movie_title = request.POST.get('movie-title')
         except_cloudinary_ids = request.POST.getlist('except-cloudinary-ids[]')
-        """init_qty = 3
-        is_init = len(except_cloudinary_ids) == 0
-        if is_init:
-            qty = init_qty
-        else:
-            qty = 2 #len(except_cloudinary_ids) - init_qty + 1"""
         qty = 2
         result['frames'] = get_cloud_frames(movie_title, qty, except_cloudinary_ids)
+    return JsonResponse(result)
+
+def request_best_score(request):
+    best_scores = request.session.get('best_scores', {})
+    movie_title = request.POST.get('movie_title')
+    best_score = best_scores.get(movie_title, 0)
+    result = {'bestScore': best_score}
     return JsonResponse(result)
