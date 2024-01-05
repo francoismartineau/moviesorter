@@ -10,4 +10,5 @@ Failure removes points. A best score is kept in a cookie file.<br>
 
 ![alt text](https://i.postimg.cc/HnZMMNYN/pulp-fiction.gif)
 
-The website is down for the moment.
+css and logo were made by my friend [Alexandre Daigle](https://deagle.ca/).
+Website is down for the moment.
