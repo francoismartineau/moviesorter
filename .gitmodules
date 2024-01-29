@@ -1,0 +1,3 @@
+[submodule "cloudinary_uploader"]
+	path = cloudinary_uploader
+	url = https://github.com/francoismartineau/cloudinary_uploader.git
