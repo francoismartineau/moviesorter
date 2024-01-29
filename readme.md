@@ -12,3 +12,6 @@ Failure removes points. A best score is kept in a cookie file.<br>
 
 CSS and logo were made by my friend [Alexandre Daigle](https://deagle.ca/).<br>
 Website is down for the moment.
+
+Requirements:
+ffmpeg and ffprob must be available in PATH
